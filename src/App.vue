@@ -42,15 +42,9 @@
         <button class="circle plus" @click="showModal = true"></button>
       </header>
       <div class="cards-container">
-        <div class="card">
-          <p class="main-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellat nulla iure aspernatur sunt, quo sapiente.
-          </p>
-          <p class="date">4/7/2023</p>
-        </div>
-        <div class="card">
-          <p class="main-text">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Repellat nulla iure aspernatur sunt, quo sapiente.
-          </p>
-          <p class="date">4/7/2023</p>
+        <div v-for="note in notes" class="card" :style="{ backgroundColor: note.backgroundColor }">
+          <p class="main-text">{{ note.text }}</p>
+          <p class="date">{{ note.date.toLocaleDateString('en-US') }}</p>
         </div>
       </div>
     </div>
