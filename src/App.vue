@@ -4,6 +4,7 @@
   const showModal = ref(false)
   const newNote = ref('')
   const notes = ref([])
+  const errorMessage = ref('')
 
   function getRandomColor() {
     const color = "hsl(" + Math.random() * 360 + ", 100%, 75%"
@@ -15,15 +16,23 @@
     return id
   }
 
+  function closeModal() {
+    showModal.value = false
+    newNote.value = ''
+    errorMessage.value = ''
+  }
+
   function addNote() {
+    if (newNote.value.length < 1) {
+      return errorMessage.value = 'Note must have at least 1 character'
+    }
     notes.value.push({
       text: newNote.value,
       date: new Date(),
       id: getRandomId(),
       backgroundColor: getRandomColor(),
     })
-    showModal.value = false
-    newNote.value = ''
+    closeModal()
   }
 </script>
 
@@ -31,9 +40,10 @@
   <main>
     <div v-if="showModal" class="overlay">
       <div class="modal">
-        <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <textarea v-model.trim="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <p v-if="errorMessage">{{ errorMessage }}</p>
         <button @click="addNote">Add Note</button>
-        <button class="close" @click="showModal = false">Close</button>
+        <button class="close" @click="closeModal">Close</button>
       </div>
     </div>
     <div class="container">
@@ -42,7 +52,12 @@
         <button class="circle plus" @click="showModal = true"></button>
       </header>
       <div class="cards-container">
-        <div v-for="note in notes" class="card" :style="{ backgroundColor: note.backgroundColor }">
+        <div 
+          v-for="note in notes" 
+          class="card"
+          :style="{ backgroundColor: note.backgroundColor }"
+          :key="note.id" 
+        >
           <p class="main-text">{{ note.text }}</p>
           <p class="date">{{ note.date.toLocaleDateString('en-US') }}</p>
         </div>
@@ -172,5 +187,9 @@
   .modal .close {
     background-color: rgb(193, 15, 15);
     margin-top: 7px;
+  }
+
+  .modal p {
+    color: rgb(193, 15, 15);
   }
 </style>
